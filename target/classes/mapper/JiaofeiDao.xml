@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.JiaofeiDao">
+
+
+
+
+
+
+
+
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        a.id as id
+        ,a.danyuan_types as danyuanTypes
+        ,a.shangpin_name as shangpinName
+        ,a.jiaofei_time as jiaofeiTime
+        ,a.wuye_money as wuyeMoney
+        ,a.fangzu_money as fangzuMoney
+        ,a.zong_money as zongMoney
+        ,a.jiaofei_types as jiaofeiTypes
+        ,a.jiaofei_content as jiaofeiContent
+        ,a.insert_time as insertTime
+        ,a.create_time as createTime
+    </sql>
+    <select id="selectListView" parameterType="map" resultType="com.entity.view.JiaofeiView" >
+        SELECT
+        <include refid="Base_Column_List" />
+
+--         级联表的字段
+
+        FROM jiaofei  a
+
+        <where>
+            <if test="params.ids != null">
+                and a.id in
+                <foreach item="item" index="index" collection="params.ids" open="(" separator="," close=")">
+                #{item}
+                </foreach>
+            </if>
+            <if test="params.danyuanTypes != null and params.danyuanTypes != ''">
+                and a.danyuan_types = #{params.danyuanTypes}
+            </if>
+            <if test=" params.shangpinName != '' and params.shangpinName != null and params.shangpinName != 'null' ">
+                and a.shangpin_name like CONCAT('%',#{params.shangpinName},'%')
+            </if>
+            <if test=" params.jiaofeiTime != '' and params.jiaofeiTime != null and params.jiaofeiTime != 'null' ">
+                and a.jiaofei_time like CONCAT('%',#{params.jiaofeiTime},'%')
+            </if>
+            <if test="params.wuyeMoneyStart != null ">
+                <![CDATA[  and a.wuye_money >= #{params.wuyeMoneyStart}   ]]>
+            </if>
+            <if test="params.wuyeMoneyEnd != null ">
+                <![CDATA[  and a.wuye_money <= #{params.wuyeMoneyEnd}   ]]>
+            </if>
+            <if test="params.fangzuMoneyStart != null ">
+                <![CDATA[  and a.fangzu_money >= #{params.fangzuMoneyStart}   ]]>
+            </if>
+            <if test="params.fangzuMoneyEnd != null ">
+                <![CDATA[  and a.fangzu_money <= #{params.fangzuMoneyEnd}   ]]>
+            </if>
+            <if test="params.zongMoneyStart != null ">
+                <![CDATA[  and a.zong_money >= #{params.zongMoneyStart}   ]]>
+            </if>
+            <if test="params.zongMoneyEnd != null ">
+                <![CDATA[  and a.zong_money <= #{params.zongMoneyEnd}   ]]>
+            </if>
+            <if test="params.jiaofeiTypes != null and params.jiaofeiTypes != ''">
+                and a.jiaofei_types = #{params.jiaofeiTypes}
+            </if>
+            <if test=" params.jiaofeiContent != '' and params.jiaofeiContent != null and params.jiaofeiContent != 'null' ">
+                and a.jiaofei_content like CONCAT('%',#{params.jiaofeiContent},'%')
+            </if>
+            <if test=" params.insertTimeStart != '' and params.insertTimeStart != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) >= UNIX_TIMESTAMP(#{params.insertTimeStart}) ]]>
+            </if>
+            <if test=" params.insertTimeEnd != '' and params.insertTimeEnd != null ">
+                <![CDATA[  and UNIX_TIMESTAMP(a.insert_time) <= UNIX_TIMESTAMP(#{params.insertTimeEnd}) ]]>
+            </if>
+
+        </where>
+
+        order by a.${params.orderBy} desc 
+    </select>
+
+</mapper>
